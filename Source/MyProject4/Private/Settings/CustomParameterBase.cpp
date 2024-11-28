@@ -7,3 +7,13 @@ bool UCustomParameterBase::ChooseOneOfVariants_Implementation(const int Selected
 {
 	return false;
 }
+
+void UCustomParameterBase::FillStringVariants()
+{
+	
+}
+
+const TArray<FString>& UCustomParameterBase::GetStringVariants()
+{
+	return VariantsAsStrings;
+}

@@ -21,14 +21,27 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "CustomParameter")
 	bool ChooseOneOfVariants(const int SelectedNumber );
 
+	//сгенерировать массив строк из выбранных параметров
+	//выполняется пристарте игры
+	UFUNCTION(BlueprintCallable, Category = "CustomParameter")
+	void FillStringVariants( );
+
+	const TArray<FString>& GetStringVariants();
+
 public:
 	// Имя параметра
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameter")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameter", meta = (DisplayPriority = 0))
 	FName ParameterName;
 
 	//отображаемое имя
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameter")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameter", meta = (DisplayPriority = 1))
 	FName VisibleName;
+	
+
+//private:
+//	UPROPERTY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameter")
+	TArray<FString> VariantsAsStrings;
 };
 
 

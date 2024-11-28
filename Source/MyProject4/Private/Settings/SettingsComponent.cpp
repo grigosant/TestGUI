@@ -8,6 +8,10 @@
 USettingsComponent::USettingsComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
+	for (auto SingleParameter : ConfigurableParameters)
+	{
+		SingleParameter->FillStringVariants();
+	}
 }
 
 // Called when the game starts
@@ -41,40 +45,47 @@ void USettingsComponent::GetParametersStruct(TArray<FSettingParameter>& StructsA
 
 	for (auto SingleParameter : ConfigurableParameters)
 	{
-		FSettingParameter LocalParameter;
+		FSettingParameter LocalRuleParameter;
 		const UCustomParameterBase *tmpParameter = SingleParameter;
 
-		LocalParameter.RuleName = SingleParameter->ParameterName.ToString();
+		LocalRuleParameter.RuleName = SingleParameter->ParameterName.ToString();
+		LocalRuleParameter.VisibleRuleName = SingleParameter->VisibleName.ToString();
+		
 		for (TFieldIterator<FProperty> PropIt(tmpParameter->GetClass()); PropIt; ++PropIt)
 		{
-			FSettingParameterData LocalParameterData;
+			FSettingParameterData LocalVariableOfRule;
 			const FProperty* Property = *PropIt;
+
 			
-			LocalParameterData.Type = Property-> GetCPPType();
+			LocalVariableOfRule.Type = Property-> GetCPPType();
 			//Убрать из переменных граф
-			if (LocalParameterData.Type == "FPointerToUberGraphFrame")
+			if (LocalVariableOfRule.Type == "FPointerToUberGraphFrame")
 				continue;
-			//переменные из массива должны помещаться по одной
-			/*else if (LocalParameterData.Type == "TArray")
+			
+			LocalVariableOfRule.Key = Property->GetName();
+			
+			//имя и отображаемое имя уже учтены
+			if(LocalVariableOfRule.Key == "ParameterName" || LocalVariableOfRule.Key == "VisibleName")
+				continue;
+			
+			//варианты массива должны помещаться по одному
+			else if (LocalVariableOfRule.Key == "VariantsAsStrings")
 			{
-				CastField<FArrayProperty>(Property);
-				decltype(Property->)
-			}*/
+				LocalVariableOfRule.VariableValues = SingleParameter->GetStringVariants();
+			}
+
+			//остальные переменные - пока просто добавлять
 			else
 			{
-				LocalParameterData.Key = Property->GetName();
-				//
 				FString VariableAsString;
 				if(!Property->ExportText_InContainer(0, VariableAsString, (const void *)tmpParameter, this,this->GetOwner() , PPF_None))
 					continue;
-				LocalParameterData.VariableValues = (VariableAsString);
+				LocalVariableOfRule.VariableValues.Add(VariableAsString);
 			}
 			
-			
-			
-			LocalParameter.RuleValues.Add(LocalParameterData);
+			LocalRuleParameter.RuleValues.Add(LocalVariableOfRule);
 		}
-		StructsArray.Add(LocalParameter);
+		StructsArray.Add(LocalRuleParameter);
 	}
 }
 
@@ -90,9 +101,13 @@ bool USettingsComponent::SetParameterFromStruct(const FSettingParameter& Paramet
 		if(Property == nullptr)
 			continue;
 
-		Property->ImportText_InContainer(*(SingleRule.VariableValues), changingParameter, changingParameter, PPF_None );
+		for (auto SingleString : SingleRule.VariableValues)
+		{
+			
+		}
+		
+		//Property->ImportText_InContainer((SingleRule.VariableValues), changingParameter, changingParameter, PPF_None );
 	}
-	
 	
 	return true;
 }

@@ -37,6 +37,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Parameters")
 	void GetParametersStruct(TArray<FSettingParameter>& StructsArray) const;
 
+	//НЕ РАБОТАЕТ СЕЙЧАС
 	//установить значение правила с именем ParameterName
 	//обновляет только переменные
 	UFUNCTION(BlueprintCallable, Category = "Parameters")
@@ -52,9 +53,6 @@ public:
 	
 public:
 	// Массив параметров
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameters")
-	TArray<TSubclassOf<UCustomParameterBase>> TSubclassParameters;
-
 	UPROPERTY( EditDefaultsOnly,BlueprintReadWrite, Instanced, Category = "Parameters")
 	TArray<TObjectPtr<UCustomParameterBase>> ConfigurableParameters;
 };

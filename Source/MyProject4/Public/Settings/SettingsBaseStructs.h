@@ -13,17 +13,14 @@ struct FSettingParameterData
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Key;
 	
-	// Значение переменной
+	// Возможные варианты в виде строк
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString VariableValues;
-	//TArray<FString>
+	TArray<FString> VariableValues;
 
 	// Тип переменной
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Type;
 };
-
-
 
 USTRUCT(BlueprintType)
 struct FSettingParameter
@@ -33,6 +30,10 @@ struct FSettingParameter
 	// Имя параметра (ключ)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString RuleName;
+
+	// Имя параметра (ключ)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString VisibleRuleName;
 
 	// все переменные в виде массива структур
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
