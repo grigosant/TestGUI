@@ -30,6 +30,8 @@ public:
 	
 	const TArray<FString>& GetDisplayedVariants();
 
+	 FString GetVariantType() const;
+
 public:
 	// Имя правила
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rule", meta = (DisplayPriority = 0))
@@ -55,6 +57,10 @@ public:
 private:
 	//текущий выбранный вариант из списка
 	int SelectedIndex = 0;
+
+	//тип содержимого массива
+	UPROPERTY()
+	FString ContainerTypeText;
 };
 
 

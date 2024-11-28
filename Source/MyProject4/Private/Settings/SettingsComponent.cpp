@@ -8,16 +8,17 @@
 USettingsComponent::USettingsComponent()
 {
 	PrimaryComponentTick.bCanEverTick = false;
-	for (auto SingleParameter : ConfigurableParameters)
-	{
-		SingleParameter->FillStringVariants();
-	}
 }
 
 // Called when the game starts
 void USettingsComponent::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	for (auto SingleParameter : ConfigurableParameters)
+	{
+		SingleParameter->FillStringVariants();
+	}
 }
 
 // Called every frame
@@ -57,11 +58,10 @@ void USettingsComponent::GetParametersStruct(TArray<FSettingRule>& StructsArray)
 		FSettingParameterData* LocalVariableOfRule = &LocalRuleParameter.RuleVariants;
 		
 		const FProperty* Property = SingleParameter->GetClass()->FindPropertyByName("VariantsAsStrings");
-		const FArrayProperty* ArrayProperty= CastField<FArrayProperty>(Property);
-		if(ArrayProperty == nullptr)
+		if(Property == nullptr)
 			return;
 		LocalVariableOfRule->Key = Property->GetName();
-		LocalVariableOfRule->Type = Property-> GetCPPType();
+		LocalVariableOfRule->Type = SingleParameter->GetVariantType();
 
 		TArray<FString> RealVariantsArray = SingleParameter->GetRealVariants();
 		TArray<FString> DisplayVariantsArray = SingleParameter->GetDisplayedVariants();

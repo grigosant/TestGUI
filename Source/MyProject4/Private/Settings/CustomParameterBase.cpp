@@ -11,17 +11,27 @@ bool UCustomParameterBase::ChooseOneOfVariants_Implementation(const int Selected
 
 void UCustomParameterBase::FillStringVariants()
 {
-	//найти переменную с категорией 
+	//имя неизвестно, поэтому просто найти не получится, надо перебирать
+	// FArrayProperty* ArrayProperty = FindFProperty<FArrayProperty>(this->GetClass(), )
+	
 	for (TFieldIterator<FProperty> PropIt(this->GetClass()); PropIt; ++PropIt)
 	{
 		FString category = PropIt->GetMetaData(FName("Category"));
+		//сохраняем только массивы из категории
 		if(category.Equals("Variants"))
 		{
+			if(const FArrayProperty* ArrayProperty= CastField<FArrayProperty>(*PropIt))
+			{
+				FString PropertyType = ArrayProperty->GetCPPType(&ContainerTypeText,  0);
+				//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("filling %s,  %s "), *PropIt->GetName(), *ContainerTypeText));
+
+				FString VariableAsString;
+				ArrayProperty->ExportText_InContainer(0, VariableAsString, (const void *)this, this,this , PPF_None);
+				//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("filling %s"), *VariableAsString));
+
+			}
 			//пока выводим имя переменной. потом пройтись по массиву и занести в VariantsAsStrings
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("filling %s"), *PropIt->GetName()));
-			// for (TFieldIterator<FProperty> TArrayProp(PropIt->GetClass()); PropIt; ++PropIt)
-			//
-			// const FArrayProperty* ArrayProperty= CastField<FArrayProperty>();
+			
 		}
 			
 
@@ -36,4 +46,9 @@ const TArray<FString>& UCustomParameterBase::GetRealVariants()
 const TArray<FString>& UCustomParameterBase::GetDisplayedVariants()
 {
 	return VariantsDisplayNames;
+}
+
+FString UCustomParameterBase::GetVariantType() const
+{
+	return ContainerTypeText;
 }
