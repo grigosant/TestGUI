@@ -1,5 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+//КЛАСС КАК ОБРАЗЕЦ, НЕ ИСПОЛЬЗУЕТСЯ
 
 #include "Settings/ActorParameterComponent.h"
 

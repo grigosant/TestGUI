@@ -3,6 +3,19 @@
 #include "CoreMinimal.h"
 #include "SettingsBaseStructs.generated.h"
 
+USTRUCT(BlueprintType)
+struct FSettingStringValue
+{
+	GENERATED_BODY()
+
+	// Имя переменной (ключ)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString RealValue;
+	
+	// Возможные варианты в виде строк
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString DisplayValue;
+};
 
 USTRUCT(BlueprintType)
 struct FSettingParameterData
@@ -15,7 +28,7 @@ struct FSettingParameterData
 	
 	// Возможные варианты в виде строк
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FString> VariableValues;
+	TArray<FSettingStringValue> VariableValues;
 
 	// Тип переменной
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -23,21 +36,25 @@ struct FSettingParameterData
 };
 
 USTRUCT(BlueprintType)
-struct FSettingParameter
+struct FSettingRule
 {
 	GENERATED_BODY()
 
 	// Имя параметра (ключ)
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString RuleName;
+    FString RuleName;
 
-	// Имя параметра (ключ)
+    // Имя параметра (ключ)
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    FString VisibleRuleName;
+
+	//правило использует реальные значения или псевдонимы?
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString VisibleRuleName;
+	bool bUseDisplayName;
 
 	// все переменные в виде массива структур
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FSettingParameterData> RuleValues;
+	FSettingParameterData RuleVariants;
 };
 
 

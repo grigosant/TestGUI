@@ -39,19 +39,42 @@ UCustomParameterBase* USettingsComponent::GetParameterByName(FName ParameterName
 	return nullptr;
 }
 
-void USettingsComponent::GetParametersStruct(TArray<FSettingParameter>& StructsArray) const
+void USettingsComponent::GetParametersStruct(TArray<FSettingRule>& StructsArray) const
 {
 	StructsArray.Empty();
 
 	for (auto SingleParameter : ConfigurableParameters)
 	{
-		FSettingParameter LocalRuleParameter;
+		FSettingRule LocalRuleParameter;
 		const UCustomParameterBase *tmpParameter = SingleParameter;
 
+		//занести имя и видимое имя правила
 		LocalRuleParameter.RuleName = SingleParameter->ParameterName.ToString();
 		LocalRuleParameter.VisibleRuleName = SingleParameter->VisibleName.ToString();
+		LocalRuleParameter.bUseDisplayName = SingleParameter->bUseDisplayName;
 		
-		for (TFieldIterator<FProperty> PropIt(tmpParameter->GetClass()); PropIt; ++PropIt)
+
+		FSettingParameterData* LocalVariableOfRule = &LocalRuleParameter.RuleVariants;
+		
+		const FProperty* Property = SingleParameter->GetClass()->FindPropertyByName("VariantsAsStrings");
+		const FArrayProperty* ArrayProperty= CastField<FArrayProperty>(Property);
+		if(ArrayProperty == nullptr)
+			return;
+		LocalVariableOfRule->Key = Property->GetName();
+		LocalVariableOfRule->Type = Property-> GetCPPType();
+
+		TArray<FString> RealVariantsArray = SingleParameter->GetRealVariants();
+		TArray<FString> DisplayVariantsArray = SingleParameter->GetDisplayedVariants();
+		for(int i = 0; i < RealVariantsArray.Num(); i++)
+		{
+			FSettingStringValue SettingStringValue;
+			SettingStringValue.RealValue = RealVariantsArray[i];
+			SettingStringValue.DisplayValue = i < DisplayVariantsArray.Num() ? DisplayVariantsArray[i] : FString("");
+			LocalVariableOfRule->VariableValues.Add(SettingStringValue);
+		}
+		
+		
+		/*for (TFieldIterator<FProperty> PropIt(tmpParameter->GetClass()); PropIt; ++PropIt)
 		{
 			FSettingParameterData LocalVariableOfRule;
 			const FProperty* Property = *PropIt;
@@ -71,6 +94,7 @@ void USettingsComponent::GetParametersStruct(TArray<FSettingParameter>& StructsA
 			//варианты массива должны помещаться по одному
 			else if (LocalVariableOfRule.Key == "VariantsAsStrings")
 			{
+				
 				LocalVariableOfRule.VariableValues = SingleParameter->GetStringVariants();
 			}
 
@@ -84,30 +108,28 @@ void USettingsComponent::GetParametersStruct(TArray<FSettingParameter>& StructsA
 			}
 			
 			LocalRuleParameter.RuleValues.Add(LocalVariableOfRule);
-		}
+		}*/
 		StructsArray.Add(LocalRuleParameter);
 	}
 }
 
-bool USettingsComponent::SetParameterFromStruct(const FSettingParameter& ParameterData, const FName& ParameterName)
+bool USettingsComponent::SetParameterFromStruct(const FSettingRule& ParameterData, const FName& ParameterName)
 {
 	UCustomParameterBase* changingParameter = GetParameterByName(ParameterName);
 	if(changingParameter == nullptr)
 		return false;
 
-	for (auto SingleRule : ParameterData.RuleValues)
-	{
-		const FProperty* Property = changingParameter->GetClass()->FindPropertyByName(FName(SingleRule.Key));
-		if(Property == nullptr)
-			continue;
+	FSettingParameterData SingleRule = ParameterData.RuleVariants;
+	const FProperty* Property = changingParameter->GetClass()->FindPropertyByName(FName(SingleRule.Key));
+	if(Property == nullptr)
+		return false;
 
-		for (auto SingleString : SingleRule.VariableValues)
-		{
-			
-		}
+	for (auto SingleString : SingleRule.VariableValues)
+	{
 		
-		//Property->ImportText_InContainer((SingleRule.VariableValues), changingParameter, changingParameter, PPF_None );
 	}
+		
+		//Property->ImportText_InContainer((SingleRule.VariableValues), changingParameter, changingParameter, PPF_None )
 	
 	return true;
 }

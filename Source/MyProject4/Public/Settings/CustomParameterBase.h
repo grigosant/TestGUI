@@ -26,22 +26,35 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "CustomParameter")
 	void FillStringVariants( );
 
-	const TArray<FString>& GetStringVariants();
+	const TArray<FString>& GetRealVariants();
+	
+	const TArray<FString>& GetDisplayedVariants();
 
 public:
-	// Имя параметра
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameter", meta = (DisplayPriority = 0))
+	// Имя правила
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rule", meta = (DisplayPriority = 0))
 	FName ParameterName;
 
-	//отображаемое имя
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameter", meta = (DisplayPriority = 1))
+	//отображаемое имя правила
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rule", meta = (DisplayPriority = 1))
 	FName VisibleName;
 	
+	//правило использует реальные значения или псевдонимы?
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rule", meta = (DisplayPriority = 2))
+	bool bUseDisplayName;
+	
+	//псевдонимы для вариантов
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rule", meta = (DisplayAfter="bUseDisplayName", EditCondition="bUseDisplayName"))
+	TArray<FString> VariantsDisplayNames;
 
-//private:
-//	UPROPERTY()
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Parameter")
+	
+	//значения вариантов, переведенные в строки
+	//скрытое свойство, пока видимо для отладки
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rule", meta = (DisplayAfter="bUseDisplayName"))
 	TArray<FString> VariantsAsStrings;
+private:
+	//текущий выбранный вариант из списка
+	int SelectedIndex = 0;
 };
 
 

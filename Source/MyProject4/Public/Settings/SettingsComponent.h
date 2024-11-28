@@ -35,16 +35,16 @@ public:
 	//возвращает все правила в виде массива структур FSettingParameter,
 	//содержащих описание все переменных строками
 	UFUNCTION(BlueprintCallable, Category = "Parameters")
-	void GetParametersStruct(TArray<FSettingParameter>& StructsArray) const;
+	void GetParametersStruct(TArray<FSettingRule>& StructsArray) const;
 
 	//НЕ РАБОТАЕТ СЕЙЧАС
 	//установить значение правила с именем ParameterName
 	//обновляет только переменные
 	UFUNCTION(BlueprintCallable, Category = "Parameters")
-	bool SetParameterFromStruct(const FSettingParameter& ParameterData, const FName& ParameterName);
+	bool SetParameterFromStruct(const FSettingRule& ParameterData, const FName& ParameterName);
 
 	//установить для параметра один из шаблонов
-	//в кастномных параметрах функция должна быть перегружена 
+	//в кастомных объектах функция ChooseOneOfVariants должна быть перегружена 
 	UFUNCTION(BlueprintCallable, Category = "Parameters")
 	bool SelectParameterForName(const FName& ParameterName, int VariantNumber);
 
