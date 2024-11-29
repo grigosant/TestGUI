@@ -20,7 +20,8 @@ void UCustomParameterBase::FillStringVariants()
 		//сохраняем только массивы из категории
 		if(category.Equals("Variants"))
 		{
-			if(const FArrayProperty* ArrayProperty= CastField<FArrayProperty>(*PropIt))
+			FArrayProperty* ArrayProperty= CastField<FArrayProperty>(*PropIt);
+			if(ArrayProperty)
 			{
 				FString PropertyType = ArrayProperty->GetCPPType(&ContainerTypeText,  0);
 				//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("filling %s,  %s "), *PropIt->GetName(), *ContainerTypeText));
@@ -29,6 +30,16 @@ void UCustomParameterBase::FillStringVariants()
 				ArrayProperty->ExportText_InContainer(0, VariableAsString, (const void *)this, this,this , PPF_None);
 				//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("filling %s"), *VariableAsString));
 
+				//VariantsAsStrings.Empty();
+				//попытка пройтись по всем элементам
+				auto ArrayValue = ArrayProperty->GetPropertyValuePtr(ArrayProperty->ContainerPtrToValuePtr<void>(this));
+				// for(auto InnerArrayElement : ArrayValue)
+				// {
+				// 	VariantsAsStrings.Add("param");
+				// }
+				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%s contain %d"), *PropIt->GetName(), ArrayValue->Num()));
+				
+				return;
 			}
 			//пока выводим имя переменной. потом пройтись по массиву и занести в VariantsAsStrings
 			
