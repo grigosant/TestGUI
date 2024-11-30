@@ -11,7 +11,7 @@
  */
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRuleChangedState);
 
-UCLASS(Blueprintable, abstract, EditInlineNew, config=Game)
+UCLASS(Blueprintable, EditInlineNew, config=Game)
 class MYPROJECT4_API UCustomParameterBase : public UObject
 {
 	GENERATED_BODY()
@@ -49,6 +49,12 @@ public:
 	
 	UFUNCTION(BlueprintCallable, Category = "CustomParameter")
 	void ExecuteBehaviourWithName(const FName BehName);
+
+	UFUNCTION(BlueprintCallable, Category = "CustomParameter")
+	void ExecuteBehaviourWithNameOneParam(const FName BehName, UObject* ObjectToProceed);
+
+	UFUNCTION(BlueprintCallable,BlueprintPure, Category = "CustomParameter")
+	inline int GetCurrentIndex() {return SelectedIndex;}
 private:
 	DECLARE_FUNCTION(execVariantsConvert)
 	{

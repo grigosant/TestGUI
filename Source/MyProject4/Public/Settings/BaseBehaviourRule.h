@@ -12,6 +12,8 @@ enum class EExecutionTime : uint8
 	OnEnd = 3
 };
 
+class UCustomParameterBase;
+
 UCLASS(Blueprintable, abstract, EditInlineNew)
 class MYPROJECT4_API UBaseBehaviourRule : public UObject
 {
@@ -20,6 +22,12 @@ class MYPROJECT4_API UBaseBehaviourRule : public UObject
 public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Behavior Functions")
 	bool StartBehavior();
+
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Behavior Functions")
+	bool StartBehaviorParam(UObject* Object);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "Behavior Functions")
+	UCustomParameterBase* GetOwnerParameter();
 	
 
 public:
@@ -29,6 +37,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Behavior Rules")
 	FName BehaviourName;
 };
+
+inline UCustomParameterBase* UBaseBehaviourRule::GetOwnerParameter()
+{
+	return reinterpret_cast<UCustomParameterBase*>(GetOuter());
+}
+
+inline bool UBaseBehaviourRule::StartBehaviorParam_Implementation(UObject* Object)
+{
+	return false;
+}
 
 inline bool UBaseBehaviourRule::StartBehavior_Implementation()
 {

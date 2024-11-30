@@ -89,6 +89,11 @@ void UCustomParameterBase::ExecuteBehaviourWithName(const FName BehName)
 	GetBehaviourByName(BehName)->StartBehavior();		
 }
 
+void UCustomParameterBase::ExecuteBehaviourWithNameOneParam(const FName BehName, UObject* ObjectToProceed)
+{
+	GetBehaviourByName(BehName)->StartBehaviorParam(ObjectToProceed);
+}
+
 bool UCustomParameterBase::genericVariantsConvert(const void* Array, const FArrayProperty* ArrayProperty, void* Head,
                                                   const FProperty* HeadProperty, UObject* OwningObject)
 {
