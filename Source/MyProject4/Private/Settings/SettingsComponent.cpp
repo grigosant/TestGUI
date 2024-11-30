@@ -150,3 +150,15 @@ void USettingsComponent::GetAllRulesNames(TArray<FString>& Names) const
 		Names.Add(SingleParameter->ParameterName.ToString());
 	}
 }
+
+UCustomParameterBase* USettingsComponent::FindRuleWithBehaviour(const FName& BehaviourName)
+{
+	for (auto SingleParameter : ConfigurableParameters)
+	{
+		TArray<FName> ParameterBehaviourNames;
+		SingleParameter->GetAllBehavioursNames(ParameterBehaviourNames);
+		if(ParameterBehaviourNames.Contains(BehaviourName))
+			return SingleParameter;
+	}
+	return nullptr;
+}

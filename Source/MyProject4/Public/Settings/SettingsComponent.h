@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 
-#include "SettingsBaseStructs.h"
+#include "Settings/SettingsBaseStructs.h"
 
 #include "SettingsComponent.generated.h"
 
@@ -50,6 +50,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Parameters")
 	void GetAllRulesNames(TArray<FString>& Names) const;
+
+	UFUNCTION(BlueprintCallable, Category = "Parameters")
+	UCustomParameterBase* FindRuleWithBehaviour(const FName& BehaviourName);
 	
 public:
 	// Массив параметров

@@ -6,6 +6,7 @@
 bool UCustomParameterBase::ChooseOneOfVariants_Implementation(const int SelectedNumber)
 {
 	SelectedIndex = SelectedNumber;
+	OnChangeState.Broadcast();
 	return false;
 }
 
@@ -65,8 +66,31 @@ FString UCustomParameterBase::GetVariantType() const
 	return ContainerTypeText;
 }
 
+void UCustomParameterBase::GetAllBehavioursNames(TArray<FName>& Names)
+{
+	for (auto SingleBehaviour : BehaviourRules)
+	{
+		Names.Add(SingleBehaviour->BehaviourName);
+	}
+}
+
+UBaseBehaviourRule* UCustomParameterBase::GetBehaviourByName(const FName& DesiredNames)
+{
+	for (auto SingleBehaviour : BehaviourRules)
+	{
+		if(SingleBehaviour->BehaviourName == DesiredNames)
+			return SingleBehaviour;
+	}
+	return nullptr;
+}
+
+void UCustomParameterBase::ExecuteBehaviourWithName(const FName BehName)
+{
+	GetBehaviourByName(BehName)->StartBehavior();		
+}
+
 bool UCustomParameterBase::genericVariantsConvert(const void* Array, const FArrayProperty* ArrayProperty, void* Head,
-	const FProperty* HeadProperty, UObject* OwningObject)
+                                                  const FProperty* HeadProperty, UObject* OwningObject)
 {
 	FScriptArrayHelper ArrayHelper(ArrayProperty, Array);
 	if (ArrayHelper.Num() == 0)

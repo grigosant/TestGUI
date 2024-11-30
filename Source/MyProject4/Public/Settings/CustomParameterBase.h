@@ -3,11 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Settings/BaseBehaviourRule.h"
 #include "CustomParameterBase.generated.h"
 
 /**
  * 
  */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRuleChangedState);
+
 UCLASS(Blueprintable, abstract, EditInlineNew, config=Game)
 class MYPROJECT4_API UCustomParameterBase : public UObject
 {
@@ -38,6 +41,14 @@ public:
 		Category = "Converting")
 	void VariantsConvert(const TArray<int32> &Array, int32 &First, bool& Result, const UObject* OwningObject);
 
+	//получить все имена правил
+	UFUNCTION(BlueprintCallable, Category = "CustomParameter")
+	void GetAllBehavioursNames(TArray<FName>& Names);
+
+	UBaseBehaviourRule* GetBehaviourByName(const FName& DesiredNames);
+	
+	UFUNCTION(BlueprintCallable, Category = "CustomParameter")
+	void ExecuteBehaviourWithName(const FName BehName);
 private:
 	DECLARE_FUNCTION(execVariantsConvert)
 	{
@@ -102,8 +113,17 @@ public:
 	bool bUseDisplayName;
 	
 	//псевдонимы для вариантов
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rule", meta = (DisplayAfter="bUseDisplayName", EditCondition="bUseDisplayName"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Rule", meta = (DisplayAfter="bUseDisplayName", EditCondition="bUseDisplayName", DisplayPriority = 3))
 	TArray<FString> VariantsDisplayNames;
+
+	//Набор поведений
+	UPROPERTY(EditDefaultsOnly,BlueprintReadWrite, Instanced, Category = "Rule", meta = (DisplayPriority = 4))
+	TArray<TObjectPtr<UBaseBehaviourRule>> BehaviourRules;
+
+
+	UPROPERTY(BlueprintAssignable)
+	FRuleChangedState OnChangeState;
+	
 	
 private:
 	//значения вариантов, переведенные в строки
