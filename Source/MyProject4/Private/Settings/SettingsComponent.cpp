@@ -40,6 +40,23 @@ UCustomParameterBase* USettingsComponent::GetParameterByName(FName ParameterName
 	return nullptr;
 }
 
+class UCustomParameterBase* USettingsComponent::GetParameterByClassAndName(
+	TSubclassOf<UCustomParameterBase> ParameterClass, FName ParameterName) const
+{
+	const bool shouldChecName = !(ParameterName.IsNone()); 
+	for (auto SingleParameter : ConfigurableParameters)
+	{
+		if (SingleParameter->IsA(ParameterClass) )
+		{
+			if(!shouldChecName)
+				return SingleParameter;
+			else if(SingleParameter->ParameterName == ParameterName)
+				return SingleParameter;
+		}
+	}
+	return nullptr;
+}
+
 void USettingsComponent::GetParametersStruct(TArray<FSettingRule>& StructsArray) const
 {
 	StructsArray.Empty();

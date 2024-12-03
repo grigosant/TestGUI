@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CustomParameterBase.h"
 #include "Components/ActorComponent.h"
 
 #include "Settings/SettingsBaseStructs.h"
@@ -29,8 +30,15 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	
 	// Получение параметра с именем
-	UFUNCTION(BlueprintCallable, Category = "Parameters")
+	// возвращает объект базового класса
+	UFUNCTION(BlueprintCallable, Category = "Parameters", meta = (DeterminesOutputType = "UCustomParameterBase"))
 	UCustomParameterBase* GetParameterByName(FName ParameterName) const;
+
+	// Получение параметра выбранного класса с именем
+	// Если имя не указано, возвращает первый найденный объект выбранного класса
+	UFUNCTION(BlueprintCallable, Category = "Parameters", meta = (DeterminesOutputType = "ParameterClass",
+		AdvancedDisplay = "ParameterName"))
+	class UCustomParameterBase* GetParameterByClassAndName(TSubclassOf<UCustomParameterBase> ParameterClass,FName ParameterName) const;
 
 	//возвращает все правила в виде массива структур FSettingParameter,
 	//содержащих описание все переменных строками
