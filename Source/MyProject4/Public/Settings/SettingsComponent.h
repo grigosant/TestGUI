@@ -3,9 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CustomParameterBase.h"
 #include "Components/ActorComponent.h"
-
+#include "CustomParameterBase.h"
 #include "Settings/SettingsBaseStructs.h"
 
 #include "SettingsComponent.generated.h"
@@ -31,7 +30,7 @@ public:
 	
 	// Получение параметра с именем
 	// возвращает объект базового класса
-	UFUNCTION(BlueprintCallable, Category = "Parameters", meta = (DeterminesOutputType = "UCustomParameterBase"))
+	UFUNCTION(BlueprintCallable, Category = "Parameters")
 	UCustomParameterBase* GetParameterByName(FName ParameterName) const;
 
 	// Получение параметра выбранного класса с именем
@@ -40,6 +39,8 @@ public:
 		AdvancedDisplay = "ParameterName"))
 	class UCustomParameterBase* GetParameterByClassAndName(TSubclassOf<UCustomParameterBase> ParameterClass,FName ParameterName) const;
 
+	UFUNCTION(BlueprintCallable, Category = "Parameters")
+	UCustomParameterBase* GetParameterByDisplayName(FName ParameterName) const;
 	//возвращает все правила в виде массива структур FSettingParameter,
 	//содержащих описание все переменных строками
 	UFUNCTION(BlueprintCallable, Category = "Parameters")
@@ -54,7 +55,7 @@ public:
 	//установить для параметра один из шаблонов
 	//в кастомных объектах функция ChooseOneOfVariants должна быть перегружена 
 	UFUNCTION(BlueprintCallable, Category = "Parameters")
-	bool SelectParameterForName(const FName& ParameterName, int VariantNumber);
+	bool SelectParameterForName(const FName& ParameterName, int VariantNumber, bool DisplayName);
 
 	UFUNCTION(BlueprintCallable, Category = "Parameters")
 	void GetAllRulesNames(TArray<FString>& Names) const;

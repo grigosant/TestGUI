@@ -40,6 +40,18 @@ UCustomParameterBase* USettingsComponent::GetParameterByName(FName ParameterName
 	return nullptr;
 }
 
+UCustomParameterBase* USettingsComponent::GetParameterByDisplayName(FName ParameterName) const
+{
+	for (auto SingleParameter : ConfigurableParameters)
+	{
+		if (SingleParameter->VisibleName == ParameterName)
+		{
+			return SingleParameter;
+		}
+	}
+	return nullptr;
+}
+
 class UCustomParameterBase* USettingsComponent::GetParameterByClassAndName(
 	TSubclassOf<UCustomParameterBase> ParameterClass, FName ParameterName) const
 {
@@ -151,9 +163,9 @@ bool USettingsComponent::SetParameterFromStruct(const FSettingRule& ParameterDat
 	return true;
 }
 
-bool USettingsComponent::SelectParameterForName(const FName& ParameterName, int VariantNumber)
+bool USettingsComponent::SelectParameterForName(const FName& ParameterName, int VariantNumber, bool DisplayName)
 {
-	UCustomParameterBase* changingParameter = GetParameterByName(ParameterName);
+	UCustomParameterBase* changingParameter = DisplayName ? GetParameterByDisplayName(ParameterName) : GetParameterByName(ParameterName);
 	if(changingParameter == nullptr)
 		return false;
 
